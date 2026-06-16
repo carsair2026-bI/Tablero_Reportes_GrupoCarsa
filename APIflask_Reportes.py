@@ -37,13 +37,13 @@ def login_required(f):
 
                 return jsonify({
                     "session_expired": True,
-                    "redirect": url_for('login')
+                    "redirect": url_for('index')
                 }), 401
 
             # Navegación normal
             flash('Tu sesión ha expirado o no has iniciado sesión ⚠️', 'warning')
 
-            return redirect(url_for('login'))
+            return redirect(url_for('index'))
 
         return f(*args, **kwargs)
 
@@ -120,25 +120,25 @@ def login():
         if autenticar_ad(usuario, password):
             session['usuario'] = usuario
             flash("✅ Inicio de sesión exitoso.", "success")
-            return redirect(url_for('index'))
+            return redirect(url_for('login'))
         else:
             flash("❌ Credenciales inválidas.", "danger")
 
-    return render_template('login.html')
+    return render_template('index.html')
 
 
 @app.route('/logout')
 def logout():
     session.clear()
     flash('Sesión cerrada correctamente 👋', 'info')
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
 
 
 @app.route('/Index_GrupoCarsa/Reportes')
 @login_required
 def index():
     usuario = session.get('usuario', 'Desconocido')
-    return render_template('index.html', usuario=usuario, modulos=modulos)
+    return render_template('login.html', usuario=usuario, modulos=modulos)
 
 
 @app.route('/Index_GrupoCarsa/Reportes/<modulo>')
